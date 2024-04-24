@@ -1,13 +1,23 @@
 package com.kky.data.model
 
+import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.Junction
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 
+@Entity(primaryKeys = ["id", "name"])
+internal data class TodoCrossRef(
+    val id: Int,
+    val name: String
+)
 @Entity
-data class TodoEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long,
-    val title: String,
-    val tag: List<String>,
-    val memo: String?,
-    val complete: Boolean
+internal data class TodoEntity(
+    @Embedded val task: TaskEntity,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "name",
+        associateBy = Junction(TodoCrossRef::class)
+    )
+    val tag: List<TagEntity>
 )
